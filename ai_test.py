@@ -13,15 +13,43 @@ import pylab
 import copy
 import numpy
 
-def get_data(json,features):
+def get_data(json):
+
+    features = ["BPM",
+                "tempo",
+                "speed",
+                "BPM_uncertainty",
+                "MFCC_mean",
+                "MFCC_coef",
+                "SSC",
+                "complexity",
+                "avg_freq_power",
+                "layers",
+                "centroid",
+                "spectral_flux",
+                "rolloff",
+                "zeros",
+                "max_freq",
+                "freq_power",
+                "volume"]
+    
+    features = ["MFCC_mean","MFCC_coef","SSC","avg_freq_power","centroid","spectral_flux","zeros","freq_power","volume"]
 
     x = []
     y = []
     
     for song in json:
 
-        x.append(json[song]["genre"])       
-        y.append(json[song]["descriptor"])
+        x.append(json[song]["genre"])
+
+        temp = []
+
+        for feature in features:
+            for i in range(0,len(json[song]["descriptor"][feature])):
+        
+                temp.append(json[song]["descriptor"][feature][i])
+
+        y.append(temp)
         
     return x, y
 
@@ -59,14 +87,10 @@ def PCA(training_data, test_data):
 
     return training_data, test_data
             
-def test(features=None):
-
-    if features == None:
+def test():
     
-        features = list(numpy.ones(43))
-    
-    training_target, training_data = get_data(training_data_json,features)
-    test_target, test_data = get_data(test_data_json,features)
+    training_target, training_data = get_data(training_data_json)
+    test_target, test_data = get_data(test_data_json)
 
     training_data, test_data = PCA(training_data,test_data)
 
